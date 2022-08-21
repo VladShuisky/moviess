@@ -1,0 +1,35 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>this is bloggg</h1>       
+        </header>
+        <main>
+            <p>Авторизируйтесь</p>
+            <form action="{% url 'blog:authorisation' %}" method="post">Авторизация пользователя
+            {% csrf_token %}
+                <br>
+                    {{ form }}
+                    <input type="submit" value="Войти">
+            </form>
+            <br>
+            <p>Или зарегистрируйтесь...</p>
+            <form action="{% url 'blog:registration' %}" method="post">
+            {% csrf_token %}
+                    <br>
+                        {{ form }}
+                        <input type="submit" value="Зарегистрироваться">
+                </form>
+        </main>
+    </div>
+</body>
+</html>

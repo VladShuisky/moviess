@@ -1,0 +1,58 @@
+body {
+    background: url("/static/blog/images/blogbg.jpg");
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    border-radius: 50px;
+    background-color: rgba(89, 120, 142, 0.378);
+    width: 960px;
+    margin: 0 auto;
+}   
+
+h1, p, form {
+    text-align: center;
+}
+
+a, a:visited {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+footer {    
+    display: flex;
+    justify-content: space-around;
+}
+
+.text {
+    max-width: 850px;
+}
+
+
+.postcreatingform {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    /* align-items: center; */
+}
+
+.plus {
+    position: absolute;
+    margin-top: -57px;
+    margin-left: 403px;
+    width: 50px;
+    height: 50px;
+}

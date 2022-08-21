@@ -1,0 +1,28 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>this is bloggg</h1>       
+        </header>
+        <main>
+            <form class="postcreatingform" action="{% url 'blog:publicate'%}" method="post">Создать пост
+            {% csrf_token %}
+                <br>
+                    <input type="text" maxlength="50" name="post_title" placeholder="Заголовок">
+                    <textarea name="post_text" id="1" cols="30" rows="10" placeholder="Текст поста"></textarea>
+                    <input type="submit" value="Отправить">
+            </form>
+            <br>
+        </main>
+    </div>
+</body>
+</html>
