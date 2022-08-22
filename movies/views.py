@@ -1,3 +1,4 @@
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .forms import ReviewForm
 from .models import *
@@ -7,17 +8,50 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from .serializers import ActorSerializer, UserSerializer
 from blog.models import CustomUser
+from django.contrib.auth import authenticate, login, logout
+from .forms import RegistrationForm
+
+
+class AuthorisationView(DetailView):
+    def post(self, request):
+            username = request.POST['name']
+            password = request.POST['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect(reverse('movies:movies'))
+            else:
+                return HttpResponse('Ошибка')
+
+def loginpage(request):
+    form = RegistrationForm()
+    template = 'movies/authorisation.html'
+    return render(request, template, {'form': form})
+
+def login_out(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('movies:movies'))
+    
 
 class MovieView(ListView):
-    context_object_name = 'movies'
+    # context_object_name = 'movies'
     model = Movie
-    queryset = Movie.objects.filter(draft=False)
+    # queryset = Movie.objects.filter(draft=False)
     template_name = 'movies/movielist.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['movies'] = Movie.objects.filter(draft=False)
+        context['user'] = self.request.user
+        return context
+
+    # def get(self, request, *args, **kwargs):
+    #     return render(request, self.template_name, self.get_context_data)
 
     # def get (self, request):
     #     movies = Movie.objects.all()
     #     template = 'movies/movielist.html'
-    #     context = {'movies': movies}
+    #     context = {'movies': movies}  
     #     return render(request, template, context)
 
 
@@ -38,13 +72,16 @@ class AddReview(View):
     def post(self, request, pk):    # pk это movie.id который мы передали из шаблонизатора в форму, данные из которой отправились пост запросом
         form = ReviewForm(request.POST)
         movie = Movie.objects.get(pk=pk)
-        if form.is_valid():
-            form = form.save(commit=False) # теперь можно добавить в форму поле напрямую
-            if request.POST.get('parent', None):
-                form.parent_id = int(request.POST.get('parent'))
-            form.movie = movie # movie_id это колонка для привязку фильма к review по id фильма. Здесь мы его напрямую указываем через Pk
-            form.save()  # экземпляр Review создан
-        return redirect(movie.get_absolute_url())
+        if request.user.is_authenticated:
+            if form.is_valid():
+                form = form.save(commit=False) # теперь можно добавить в форму поле напрямую
+                if request.POST.get('parent', None):
+                    form.parent_id = int(request.POST.get('parent'))
+                form.movie = movie # movie_id это колонка для привязку фильма к review по id фильма. Здесь мы его напрямую указываем через Pk
+                form.save()  # экземпляр Review создан
+            return redirect(movie.get_absolute_url())
+        else: 
+            return HttpResponse('Вы не зарегистрированы в сети')
 
 
 # django rest framework

@@ -1,0 +1,20 @@
+{% extends 'movies/base.html' %}
+
+{% block content%}
+<div class="form authorisation_form">
+    <form class="form" action="{% url 'movies:authorisation' %}" method="post">Авторизация пользователя
+        {% csrf_token %}
+            <br>
+                {{ form }}
+                <input class="btn btn-info" type="submit" value="Войти">
+        </form>
+        <br>
+        <p>Или зарегистрируйтесь...</p>
+    <form action="{% url 'blog:registration' %}" method="post">
+    {% csrf_token %}
+            <br>
+                {{ form }}
+                <input class="btn btn-info" type="submit" value="Зарегистрироваться">
+    </form>
+</div>
+{% endblock %}

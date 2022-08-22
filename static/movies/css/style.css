@@ -1569,3 +1569,8 @@ a.move-top span {
 @media(max-width:320px) {}
 
 /*--//responsive--*/
+
+.authorisation_form {
+    max-height: 400px;
+    padding-left: 50px;
+}

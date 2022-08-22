@@ -14,7 +14,6 @@ from .forms import RegistrationForm
 class IndexViev(View):
     def get(self, request):
         if request.user.is_authenticated:
-            print(request.user.id)
             posts = Post.objects.filter(draft=False)
             context = {'posts': posts, 'user': request.user}
             template = 'blog/index.html'

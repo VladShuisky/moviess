@@ -43,7 +43,7 @@ class ActorAdmin(admin.ModelAdmin):
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ('title', 'year', 'country', 'world_premiere', 'poster', 'draft')
+    list_display = ('title', 'year', 'country', 'world_premiere', 'get_poster', 'draft')
     list_filter = ('category', 'year', 'country')
     search_fields = ('title',)
     inlines = [ReviewInLine, ]
@@ -62,6 +62,9 @@ class MovieAdmin(admin.ModelAdmin):
         models.CharField: {'widget': TextInput(attrs={'size':'150'})},
         models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
     }
+
+    def get_poster(self, obj):
+        return mark_safe(f'<img src={obj.poster.url} width="50" height="70">')
 
 @admin.register(Reviews)
 class MovieAdmin(admin.ModelAdmin):
