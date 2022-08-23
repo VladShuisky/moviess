@@ -19,7 +19,11 @@
                 </li>
                 <li style="list-style: none">
                     <span><b>Режиссер:</b> {{ directors }}</span></li>
-                <li style="list-style: none"><span><b>Актеры:</b>{{ actors }}</span></li>
+                <li style="list-style: none"><span class="del_comma"><b>Актеры:</b>
+                    {% for actor in movie.actors.all %}
+                        <a href="{% url 'movies:actor' actor.name %}">{{actor.name}}</a>,
+                    {% endfor %}
+                </span></li>
                 <li style="list-style: none"><span><b>Жанр:</b> {{genres}}</span>
                 </li>
                 <li style="list-style: none"><span><b>Премьера в мире:</b> {{movie.world_premiere}}</span>

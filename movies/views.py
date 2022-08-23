@@ -12,6 +12,11 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import RegistrationForm
 
 
+class ActorView(DetailView):
+    template_name = 'movies/actor.html'
+    model = Actor
+    slug_field = 'name'
+
 class AuthorisationView(DetailView):
     def post(self, request):
             username = request.POST['name']
@@ -62,8 +67,8 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['actors'] = ', '.join([x.name for x in self.object.actors.all()])
-        context['directors'] = ', '.join([x.name for x in self.object.directors.all()])
+        # context['actors'] = 
+        # context['directors'] = ', '.join([x.name for x in self.object.directors.all()])
         context['genres'] = ', '.join([x.name for x in self.object.genres.all()])
         return context
 
@@ -101,3 +106,6 @@ class ActorViewSet(viewsets.ModelViewSet):
     #     context = {'movie': movie, 'directors': directors, 'actors': actors}
     #     return render(request, template, context)
     
+
+def zalupa(request):
+    return HttpResponse('hahhahahah')

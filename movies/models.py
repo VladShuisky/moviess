@@ -30,10 +30,11 @@ class Actor(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('actor_detail', kwargs={"slug": self.name})
+        return reverse('movies:actor', kwargs={"slug": self.name})
 
     def get_age(self):
         return date.today().year - self.date_of_birth.year
+
 
     class Meta:
         verbose_name = "Актеры и режиссеры"
@@ -88,6 +89,9 @@ class Movie(models.Model):
 
     def get_review(self):
         return self.reviews_set.filter(parent__isnull=True)
+
+    def get_forward_actors(self):
+        return self.actors.all()[:2]
     
     class Meta:
         verbose_name = "Фильм"

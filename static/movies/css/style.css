@@ -1574,3 +1574,12 @@ a.move-top span {
     max-height: 400px;
     padding-left: 50px;
 }
+
+.ctr {
+    font-size: 10px;
+}
+
+.grid-price {
+    font-size: 10px;
+    letter-spacing: 10px;
+}

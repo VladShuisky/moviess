@@ -1,4 +1,13 @@
 console.log('hahahah')
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    document.querySelector('.del_comma').lastChild.remove()
+    console.log('Выполнено')
+})
+
+console.log('Выполнено')
+
+
 let money_fields = document.querySelectorAll('.m')
 
 function moneyFormat(el) {
@@ -11,3 +20,4 @@ function moneyFormat(el) {
 }
 
 money_fields.forEach(field => moneyFormat(field))
+

@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponse
 
 from . import views
 
@@ -12,6 +13,9 @@ urlpatterns = [
     path('', views.MovieView.as_view(), name='movies'),
     path('<slug:slug>/', views.MovieDetailView.as_view(), name='moviedetail'),
     path('review/<int:pk>/', views.AddReview.as_view(), name='add_review'),
+    path('actor/<str:slug>/', views.ActorView.as_view(), name='actor'),
+    path('zalu/pa/flin/ta/<slug:slug>', views.zalupa, name='zalupa'),
+    # path('hello/', HttpResponse('hello'), name='hello'),
 ]
 
 
