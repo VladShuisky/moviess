@@ -1,3 +1,4 @@
+from urllib import request
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .forms import ReviewForm
@@ -10,6 +11,15 @@ from .serializers import ActorSerializer, UserSerializer
 from blog.models import CustomUser
 from django.contrib.auth import authenticate, login, logout
 from .forms import RegistrationForm
+
+
+class GenreYear:
+    def get_genres(self):
+        return Genre.objects.all()
+
+    def get_years(self):
+        return Movie.objects.filter(draft=False).values('year').order_by('-year')
+
 
 
 class ActorView(DetailView):
@@ -38,7 +48,7 @@ def login_out(request):
     return HttpResponseRedirect(reverse('movies:movies'))
     
 
-class MovieView(ListView):
+class MovieView(ListView, GenreYear):
     # context_object_name = 'movies'
     model = Movie
     # queryset = Movie.objects.filter(draft=False)
@@ -107,5 +117,14 @@ class ActorViewSet(viewsets.ModelViewSet):
     #     return render(request, template, context)
     
 
-def zalupa(request):
-    return HttpResponse('hahhahahah')
+class FilterMoviesView(GenreYear, ListView):
+    template_name = 'movies/movielist.html'
+
+    def get_queryset(self):
+        queryset = Movie.objects.filter(draft=False)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['movies'] = Movie.objects.filter(year__in=self.request.GET.getlist('year'))
+        return context
