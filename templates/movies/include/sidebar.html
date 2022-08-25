@@ -14,18 +14,14 @@
             <ul class="w3layouts-box-list">
             {% for genre in view.get_genres %}
                 <li class="editContent" >
-                    <input type="checkbox" class="checked" name="genre" value="">
+                    <input type="checkbox" class="checked" name="genre" value="{{genre.id}}">
                     <span class="span editContent" >{{genre.name}}</span>
                 </li>
             {% endfor %}
             </ul>
         </div>
-        <button type="submit">Поиск по жанрам</button>
-    </form>
     <!-- // preference -->  
     <!-- discounts -->
-
-<form action="{% url 'movies:filter' %}" method="get">
         <div class="left-side">
             <h3 class="sear-head editContent" >Год</h3> 
             <ul class="w3layouts-box-list">
@@ -37,8 +33,8 @@
             {% endfor %}
             </ul>
         </div>
-        <button type="submit">Поиск по годам</button>
-</form>
+        <button type="submit">Поиск по годам и жанрам</button>
+    </form>
     <!-- //discounts -->
     <!-- reviews -->
     <div class="customer-rev left-side my-4">

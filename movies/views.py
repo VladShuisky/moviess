@@ -11,6 +11,7 @@ from .serializers import ActorSerializer, UserSerializer
 from blog.models import CustomUser
 from django.contrib.auth import authenticate, login, logout
 from .forms import RegistrationForm
+from django.db.models import Q
 
 
 class GenreYear:
@@ -70,7 +71,7 @@ class MovieView(ListView, GenreYear):
     #     return render(request, template, context)
 
 
-class MovieDetailView(DetailView):
+class MovieDetailView(DetailView, GenreYear):
     template_name = 'movies/moviedetail.html'
     model = Movie
     slug_field = 'url'
@@ -81,6 +82,7 @@ class MovieDetailView(DetailView):
         # context['directors'] = ', '.join([x.name for x in self.object.directors.all()])
         context['genres'] = ', '.join([x.name for x in self.object.genres.all()])
         return context
+
 
 
 class AddReview(View):
@@ -121,10 +123,13 @@ class FilterMoviesView(GenreYear, ListView):
     template_name = 'movies/movielist.html'
 
     def get_queryset(self):
-        queryset = Movie.objects.filter(draft=False)
-        return queryset
+        return self.queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['movies'] = Movie.objects.filter(year__in=self.request.GET.getlist('year'))
+        context['movies'] = Movie.objects.filter(
+            Q(year__in=self.request.GET.getlist('year')) | 
+            Q(genres__in=self.request.GET.getlist('genre'))).distinct()
+        print(self.request.GET)
+        print(context)
         return context
