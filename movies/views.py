@@ -10,8 +10,9 @@ from rest_framework import viewsets
 from .serializers import ActorSerializer, UserSerializer
 from blog.models import CustomUser
 from django.contrib.auth import authenticate, login, logout
-from .forms import RegistrationForm
+from .forms import RegistrationForm, RatingForm
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 class GenreYear:
@@ -81,6 +82,7 @@ class MovieDetailView(DetailView, GenreYear):
         # context['actors'] = 
         # context['directors'] = ', '.join([x.name for x in self.object.directors.all()])
         context['genres'] = ', '.join([x.name for x in self.object.genres.all()])
+        context['star_form'] = RatingForm()
         return context
 
 
@@ -133,3 +135,47 @@ class FilterMoviesView(GenreYear, ListView):
         print(self.request.GET)
         print(context)
         return context
+
+
+class JsonFilterView(ListView):
+    def get_queryset(self):
+        queryset = Movie.objects.filter(
+            Q(year__in=self.request.GET.getlist('year')) | 
+            Q(genres__in=self.request.GET.getlist('genre'))).distinct().values('title', 'tagline', 'url', 'poster')
+        for el in queryset:
+            print(el)
+        return queryset
+
+    def get(self, *args, **kwargs):
+        queryset = list(self.get_queryset())
+        return JsonResponse({'movies': queryset}, safe=False)
+
+
+class addRatingView(View):
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+    def post(self, request):
+        print('запрос пост произведерн')
+        form = RatingForm(request.POST)
+        print(request.POST)   # в форму вставляются данные полученные с фронтенда методом fetch
+        if form.is_valid():
+            Rating.objects.update_or_create(
+                ip=self.get_client_ip(request),
+                movie_id=int(request.POST.get('movie')),  # айди фильма из скрытого инпута формы
+                defaults={'star_id': int(request.POST.get('star'))} 
+            )
+            return HttpResponse(status=201)
+        else:
+            return HttpResponse(status=400)
+            
+
+
+## метод get_or_create ищет обьект по полям которые ппередаются в аргументы
+## но по полю который передается в defaults он не ищет!!!
+## однако в случае ненахождения данного обьекта он создаст новый обьект и включит туда поле, переданное в словаре defaults

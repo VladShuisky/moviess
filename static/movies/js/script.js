@@ -1,12 +1,7 @@
-console.log('hahahah')
-
 document.addEventListener('DOMContentLoaded', ()=>{
-    document.querySelector('.del_comma').lastChild.remove()
-    console.log('Выполнено')
+    let coma = document.querySelector('.del_comma');
+    if(coma) {coma.lastChild.remove()} ;
 })
-
-console.log('Выполнено')
-
 
 let money_fields = document.querySelectorAll('.m')
 
@@ -20,4 +15,16 @@ function moneyFormat(el) {
 }
 
 money_fields.forEach(field => moneyFormat(field))
+
+
+const rating = document.querySelector('form[name=rating]')
+console.log(rating)
+rating.addEventListener('change', function(event) {
+    let data = new FormData(this) //берет номер звезды высланный из формы
+    console.log(event.target)
+    let url = `${this.action}`    // url из action формы
+    fetch(url, {method: 'POST', body: data})   // отправляет звезду по url на сервер
+    .then(response => alert('Рейтинг установлен'))   // ждет ответ      
+    .catch(error => alert('Ошибка'))
+})
 

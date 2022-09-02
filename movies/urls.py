@@ -7,8 +7,10 @@ from . import views
 
 app_name = 'movies'
 urlpatterns = [
+    path('add-rating/', views.addRatingView.as_view(), name='add_rating'),
     path('loginpage/', views.loginpage, name='loginpage'),
-    path('filter', views.FilterMoviesView.as_view(), name='filter'),
+    path('filter/', views.FilterMoviesView.as_view(), name='filter'),
+    path('json-filter', views.JsonFilterView.as_view(), name='json_filter'),
     path('login_out/', views.login_out, name='logout'),
     path('user_auth/', views.AuthorisationView.as_view(), name='authorisation'),  
     path('', views.MovieView.as_view(), name='movies'),
