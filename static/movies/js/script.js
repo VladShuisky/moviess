@@ -17,14 +17,26 @@ function moneyFormat(el) {
 money_fields.forEach(field => moneyFormat(field))
 
 
-const rating = document.querySelector('form[name=rating]')
-console.log(rating)
-rating.addEventListener('change', function(event) {
-    let data = new FormData(this) //берет номер звезды высланный из формы
-    console.log(event.target)
-    let url = `${this.action}`    // url из action формы
-    fetch(url, {method: 'POST', body: data})   // отправляет звезду по url на сервер
-    .then(response => alert('Рейтинг установлен'))   // ждет ответ      
-    .catch(error => alert('Ошибка'))
-})
 
+const rating = document.querySelector('form[name=rating]')
+if (rating) { 
+    rating.addEventListener('change', function(event) {
+        let data = new FormData(this) //берет номер звезды высланный из формы
+        console.log(event.target)
+        let url = `${this.action}`    // url из action формы
+        fetch(url, {method: 'POST', body: data})   // отправляет звезду по url на сервер
+        .then(response => {response.status == 400? alert('Вы не авторизованы'): alert('Рейтинг установлен')})   // ждет ответ      
+        .catch(error => alert('Ошибка'))
+    })
+}
+
+
+document.querySelector('.open_registration').addEventListener('click', (e)=> {
+    e.preventDefault()
+    blocker = document.querySelector('.content_blocker')
+    blocker.hidden = false
+    document.querySelector('.authorisation_form').addEventListener('click', (event)=>event.stopPropagation())
+    blocker.addEventListener('click', (event)=> {
+        blocker.hidden = true
+    })
+})

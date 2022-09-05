@@ -13,7 +13,8 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import RegistrationForm, RatingForm
 from django.db.models import Q
 from django.http import JsonResponse
-
+from django import forms
+from django.core.paginator import Paginator
 
 class GenreYear:
     def get_genres(self):
@@ -51,14 +52,14 @@ def login_out(request):
     
 
 class MovieView(ListView, GenreYear):
-    # context_object_name = 'movies'
     model = Movie
-    # queryset = Movie.objects.filter(draft=False)
+    queryset = Movie.objects.filter(draft=False)
     template_name = 'movies/movielist.html'
+    paginate_by = 3
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['movies'] = Movie.objects.filter(draft=False)
+        context['movies'] = self.queryset
         context['user'] = self.request.user
         return context
 
@@ -79,9 +80,8 @@ class MovieDetailView(DetailView, GenreYear):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['actors'] = 
-        # context['directors'] = ', '.join([x.name for x in self.object.directors.all()])
         context['genres'] = ', '.join([x.name for x in self.object.genres.all()])
+        context['user'] = self.request.user
         context['star_form'] = RatingForm()
         return context
 
@@ -164,13 +164,13 @@ class addRatingView(View):
         print('запрос пост произведерн')
         form = RatingForm(request.POST)
         print(request.POST)   # в форму вставляются данные полученные с фронтенда методом fetch
-        if form.is_valid():
-            Rating.objects.update_or_create(
-                ip=self.get_client_ip(request),
-                movie_id=int(request.POST.get('movie')),  # айди фильма из скрытого инпута формы
-                defaults={'star_id': int(request.POST.get('star'))} 
-            )
-            return HttpResponse(status=201)
+        if form.is_valid() and request.user.username != '':
+                Rating.objects.update_or_create(
+                    ip=self.get_client_ip(request),
+                    movie_id=int(request.POST.get('movie')),  # айди фильма из скрытого инпута формы
+                    defaults={'star_id': int(request.POST.get('star'))} 
+                )
+                return HttpResponse(status=201)
         else:
             return HttpResponse(status=400)
             

@@ -35,6 +35,7 @@
                 <li style="list-style: none"><span><b>Сборы в мире:</b> $<span class="m">{{movie.fess_in_world}}</span></span>
                 </li>
                 <li style="list-style: none">
+                    {% if user.username != '' %}
                     <form action="{% url 'movies:add_rating' %}" method="post", name="rating" class="rating_form">
                         <b>Рейтинг</b>
                         {% csrf_token %}
@@ -47,6 +48,28 @@
                         </span>
                         <span class="editContent">4.0</span>
                     </form>
+                    {% endif %}
+                    {% if user.username == '' %}
+                        <span>Рейтинг недоступен незарегистрированный пользователям, <a class="open_registration" href="">войти</a></span>
+                        <div class="content_blocker" hidden>
+                            <div class="form authorisation_form" style="position:absolute; width: 50%; height: 50%; left: 30%; top: 30%">
+                                <form class="form" action="{% url 'movies:authorisation' %}" method="post">Авторизация пользователя
+                                    {% csrf_token %}
+                                        <br>
+                                            {{ registration_form }}
+                                            <input class="btn btn-info" type="submit" value="Войти">
+                                    </form>
+                                    <br>
+                                    <p>Или зарегистрируйтесь...</p>
+                                <form action="{% url 'blog:registration' %}" method="post">
+                                {% csrf_token %}
+                                        <br>
+                                            {{ registration_form }}
+                                            <input class="btn btn-info" type="submit" value="Зарегистрироваться">
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
                 </li>
                 <div class="share-desc">
                     <div class="share">
